@@ -34,8 +34,6 @@ const registerAndScreen = async (address: string) => {
     screenAddress(address);
 }
 
-// registerAndScreen("0xd000c34F82b5AE6907C6Bb36f9d4AbD10279Af7d");
-
 const getAddressesFromFile = ( path: string = './src/addressScreening/addressList.csv' ): string[] => {
     var addresses = fs.readFileSync(path)
     .toString() // convert Buffer to string
@@ -46,9 +44,9 @@ const getAddressesFromFile = ( path: string = './src/addressScreening/addressLis
     return addresses
 }
 
-const screenAddresses = async ( addressList?: string[] ) => { 
+export const screenAddresses = async ( addressList: string[] ) => { 
 
-    const addresses = addressList || getAddressesFromFile();
+    const addresses = addressList;
     console.log( addresses.length, 'addresses provided.' );
 
     const uniqueAddresses = [...new Set(addresses)];
@@ -57,7 +55,6 @@ const screenAddresses = async ( addressList?: string[] ) => {
     const result = await Promise.all(
         uniqueAddresses
         .map(async (address:string) => {
-            // const address = uniqueAddresses[i];
             await registerAddress(address);
             return screenAddress(address);
         })
@@ -70,7 +67,7 @@ const screenAddresses = async ( addressList?: string[] ) => {
         console.log('Data written to file');
     });
 
+    return result;
 }
 
-
-screenAddresses();
+screenAddresses( getAddressesFromFile() );
