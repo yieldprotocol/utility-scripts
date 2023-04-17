@@ -1,6 +1,5 @@
 import axios from "axios";
 import * as fs from "fs";
-
 import * as previousScreens from './screeningOutput.json';
 
 require("dotenv").config();
@@ -49,7 +48,6 @@ const getAddressesFromFile = (
   return addresses;
 };
 
-
 export const runScreening = async (
   addressList: string[],
   registerAddresses: boolean = true
@@ -70,9 +68,7 @@ export const runScreening = async (
         registerAddress(address)
       )
     ));
-
   console.log("Screening in progress...");
-
   for (const add of uniqueAddresses) {
     if (screened.find((a:any)=> a.address === add) ) {
       console.log('Skipped: ', add)
@@ -82,7 +78,6 @@ export const runScreening = async (
       console.log('Screened: ', res)
     }
   }
-
   const jsonResult = JSON.stringify(screened, null, 2);
   fs.writeFile(
     "./src/addressScreening/screeningOutput.json",
@@ -92,12 +87,11 @@ export const runScreening = async (
       console.log("Data written to file");
     }
   );
-
   return screened
 };
 
-runScreening(getAddressesFromFile(), false);
-
+/* Uncomment to run screening */
+// runScreening(getAddressesFromFile(), false);
 
 export const report = (severity: "HIGH" | "MEDIUM" | "LOW") => {
   const data = fs.readFileSync("./src/addressScreening/screeningOutput.json");
