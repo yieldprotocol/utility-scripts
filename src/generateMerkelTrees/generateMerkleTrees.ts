@@ -2,21 +2,24 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import fs from "fs";
 import {
   TokenHolder,
-  getAllTokenHolders,
+  // getAllTokenHolders,
 } from "../getAllTokenHolders/getAllTokenHolders";
 
-import tokenList from "./tokenList.json";
+import tokenList from "../getAllTokenHolders/tokenList.json";
+import tokenHolders from "../getAllTokenHolders/output/tokenHolders.json";
 
-const generateMerkleTree_ = async (token: string) => {
-  const tokenHolders = await getAllTokenHolders([token]);
-  
-  const values = tokenHolders.map((tokenHolder: TokenHolder) => {
+const generateMerkleTree_ = async (token?: string) => {
+  // const tokenHolders =  await getAllTokenHolders([token]);
+
+  const values = tokenHolders
+  .filter((tokenHolder: TokenHolder) => tokenHolder.tokenAddress === token)
+  .map((tokenHolder: TokenHolder) => {
     return [ tokenHolder.holderAddress, tokenHolder.holderBalance ];
   });
 
   const tree = StandardMerkleTree.of(values, ["address", "uint256"]);
   console.log("Merkle Root:", tree.root);
-  fs.writeFile(__dirname +`/output/${token}.json`, JSON.stringify(tree.dump()), ()=>console.log("done"));
+  fs.writeFileSync(__dirname +`/output/${token}.json`, JSON.stringify(tree.dump()));
 };
 
 export const generateMerkleTrees = async(tokens: string[]) =>{ 

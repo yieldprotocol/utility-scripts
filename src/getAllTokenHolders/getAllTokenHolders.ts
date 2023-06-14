@@ -61,7 +61,7 @@ async function getAllTokenHolders_(
 
 export const getAllTokenHolders = async (
   tokens: string[],
-  writeToFile: boolean = false
+  writeToCSVFile: boolean = false
 ) => {
 
   // const network = "mainnet";
@@ -78,7 +78,7 @@ export const getAllTokenHolders = async (
   const tokenHolders = await getAllTokenHolders_(provider, tokens);
 
   /* write token holders to csv file */
-  if (writeToFile) {
+  if (writeToCSVFile) {
     const writer = csvWriter({
       headers: ["token address", "holder address", "holder balance"],
     });
@@ -95,6 +95,8 @@ export const getAllTokenHolders = async (
     writer.end();
   }
 
+  /* write token holders to json file */
+  fs.writeFileSync(__dirname +`/output/tokenHolders.json`, JSON.stringify(tokenHolders));
   /* also, return token holders a for standalone fun */
   return tokenHolders;
 };
