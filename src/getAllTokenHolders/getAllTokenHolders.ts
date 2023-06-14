@@ -71,7 +71,7 @@ const getAllTokenHolders = async (tokens: string[], writeToFile: boolean = false
       headers: ["token address", "holder address", "holder balance"],
     });
     writer.pipe(
-      fs.createWriteStream("./src/getAllTokenHolders/tokenHolders.csv")
+      fs.createWriteStream("./src/getAllTokenHolders/ouput/tokenHolders.csv")
     );
     tokenHolders.forEach((tokenHolder) => {
       // console.log( tokenHolder.tokenAddress, tokenHolder.holderAddress, tokenHolder.holderBalance)
