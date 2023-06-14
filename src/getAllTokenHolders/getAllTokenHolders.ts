@@ -1,4 +1,4 @@
-import { JsonRpcProvider, ethers } from "ethers";
+import { AbstractProvider, JsonRpcProvider, ethers } from "ethers";
 import fs from "fs";
 import csvWriter from "csv-write-stream";
 import tokenList from "./tokenList.json";
@@ -10,7 +10,7 @@ export interface TokenHolder {
 }
 
 async function getAllTokenHolders_(
-  provider: JsonRpcProvider,
+  provider: AbstractProvider,
   tokenAddresses: string[]
 ): Promise<TokenHolder[]> {
   const tokenHolders = [] as TokenHolder[];
@@ -58,11 +58,16 @@ async function getAllTokenHolders_(
   return tokenHolders;
 }
 
-export const getAllTokenHolders = async (tokens: string[], writeToFile: boolean = false) => {
-  // Create ethers provider
-  const provider = new JsonRpcProvider(
-    "https://mainnet.infura.io/v3/d60e29d5ff1c41cf95a6ebb557ffae08"
-  );
+export const getAllTokenHolders = async (
+  tokens: string[],
+  writeToFile: boolean = false
+) => {
+  const network = "homestead";
+  const provider = ethers.getDefaultProvider(network, {
+    etherscan: process.env.ETHERSCAN_API_KEY,
+    infura: process.env.INFURA_API_KEY,
+    alchemy: process.env.ALCHEMY_API_KEY,
+  });
 
   const tokenHolders = await getAllTokenHolders_(provider, tokens);
 
@@ -75,7 +80,6 @@ export const getAllTokenHolders = async (tokens: string[], writeToFile: boolean 
       fs.createWriteStream("./src/getAllTokenHolders/output/tokenHolders.csv")
     );
     tokenHolders.forEach((tokenHolder) => {
-      // console.log( tokenHolder.tokenAddress, tokenHolder.holderAddress, tokenHolder.holderBalance)
       writer.write([
         tokenHolder.tokenAddress,
         tokenHolder.holderAddress,
