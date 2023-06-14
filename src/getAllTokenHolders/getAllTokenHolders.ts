@@ -3,7 +3,7 @@ import fs from "fs";
 import csvWriter from "csv-write-stream";
 import tokenList from "./tokenList.json";
 
-interface TokenHolder {
+export interface TokenHolder {
   tokenAddress: string;
   holderAddress: string;
   holderBalance: string;
@@ -58,11 +58,12 @@ async function getAllTokenHolders_(
   return tokenHolders;
 }
 
-const getAllTokenHolders = async (tokens: string[], writeToFile: boolean = false) => {
+export const getAllTokenHolders = async (tokens: string[], writeToFile: boolean = false) => {
   // Create ethers provider
   const provider = new JsonRpcProvider(
     "https://mainnet.infura.io/v3/d60e29d5ff1c41cf95a6ebb557ffae08"
   );
+
   const tokenHolders = await getAllTokenHolders_(provider, tokens);
 
   /* write token holders to csv file */
@@ -88,4 +89,4 @@ const getAllTokenHolders = async (tokens: string[], writeToFile: boolean = false
   return tokenHolders;
 };
 
-getAllTokenHolders(tokenList, true);
+// getAllTokenHolders(tokenList, true);
