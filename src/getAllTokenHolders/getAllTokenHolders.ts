@@ -89,4 +89,4 @@ export const getAllTokenHolders = async (tokens: string[], writeToFile: boolean 
   return tokenHolders;
 };
 
-// getAllTokenHolders(tokenList, true);
+getAllTokenHolders(tokenList, true);
