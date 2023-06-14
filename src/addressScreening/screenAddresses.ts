@@ -93,12 +93,24 @@ export const runScreening = async (
 /* Uncomment to run screening */
 // runScreening(getAddressesFromFile(), false);
 
-export const report = (severity: "HIGH" | "MEDIUM" | "LOW") => {
+export const report = () => {
+
   const data = fs.readFileSync("./src/addressScreening/screeningOutput.json");
   const dataJson = JSON.parse(data as unknown as string);
-  // console.log(JSON.parse(data as unknown as string));
-  console.log(dataJson);
-  // console.log(dataJson.filter((a:any)=> a.  ) )
+
+  const lowRisk = dataJson.filter((ob: any)=> ob.risk.toUpperCase() === 'LOW' );
+  const mediumRisk = dataJson.filter((ob: any)=> ob.risk.toUpperCase() === 'MEDIUM' );
+  const highRisk = dataJson.filter((ob: any)=> ob.risk.toUpperCase() === 'HIGH' );
+  const severeRisk = dataJson.filter((ob: any)=> ob.risk.toUpperCase() === 'SEVERE' );
+
+  console.log('LOW RISK: ', lowRisk.length);
+  console.log('MEDIUM RISK: ', mediumRisk.length);
+  console.log('HIGH: ', highRisk.length);
+  console.log('SEVERE: ', severeRisk.length);
+
+  console.table([...mediumRisk, ...highRisk, ...severeRisk].map(x => [x.risk, x.address, x.riskReason, x.triggers[0].percentage]  ) )
+  // console.log([...mediumRisk, ...highRisk, ...severeRisk].map(x =>  x.triggers ? x.triggers: '' ) )
+
 };
 
-// report( 'MEDIUM' );
+report();
