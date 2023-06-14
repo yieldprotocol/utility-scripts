@@ -3,6 +3,8 @@ import fs from "fs";
 import csvWriter from "csv-write-stream";
 import tokenList from "./tokenList.json";
 
+require("dotenv").config();
+
 export interface TokenHolder {
   tokenAddress: string;
   holderAddress: string;
@@ -18,7 +20,6 @@ async function getAllTokenHolders_(
   await Promise.all(
     tokenAddresses.map(async (tokenAddress) => {
       console.log(`Getting holders and balances for ${tokenAddress}`);
-
       const tokenContract = new ethers.Contract(
         tokenAddress,
         [
@@ -43,7 +44,7 @@ async function getAllTokenHolders_(
       /* get balances for each holder, if non-zero- write to file */
       await Promise.all(
         uniqueAddresses.map(async (address) => {
-          const balance = await tokenContract.balanceOf(address);
+          const balance = await tokenContract.balanceOf(address);      
           +balance.toString() > 0 &&
             tokenHolders.push({
               tokenAddress,
@@ -62,13 +63,18 @@ export const getAllTokenHolders = async (
   tokens: string[],
   writeToFile: boolean = false
 ) => {
-  const network = "homestead";
-  const provider = ethers.getDefaultProvider(network, {
-    etherscan: process.env.ETHERSCAN_API_KEY,
-    infura: process.env.INFURA_API_KEY,
-    alchemy: process.env.ALCHEMY_API_KEY,
-  });
 
+  // const network = "mainnet";
+  // const provider = ethers.getDefaultProvider(network, {
+  //   etherscan: process.env.ETHERSCAN_API_KEY,
+  //   infura: process.env.INFURA_API_KEY,
+  //   alchemy: process.env.ALCHEMY_API_KEY,
+  // });
+
+  const provider = new JsonRpcProvider(
+    `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`
+  );
+ 
   const tokenHolders = await getAllTokenHolders_(provider, tokens);
 
   /* write token holders to csv file */
