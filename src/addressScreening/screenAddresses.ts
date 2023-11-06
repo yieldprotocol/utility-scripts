@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const timeout = (ms:number) => new Promise(resolve => setTimeout(resolve, ms))
 
-const registerAddress = async (address: string): Promise<string> => {
+const registerAddress = async (address: string): Promise<any> => {
   const { data } = await axios.post(
     "https://api.chainalysis.com/api/risk/v2/entities",
     { address },
@@ -59,9 +59,9 @@ export const runScreening = async (
   console.log(uniqueAddresses.length, "Unique addresses to screen.");
 
   let screened = previousScreens;
-  const screenedAddresses = previousScreens.map((a:any)=> a.address);
+  const screenedAddresses = Array.isArray(previousScreens) ? previousScreens.map((a:any)=> a.address): [];
   console.log( screenedAddresses );
-
+ 
   registerAddresses &&
     (await Promise.all(
       uniqueAddresses.map((address: string, index: number) =>
@@ -70,15 +70,15 @@ export const runScreening = async (
     ));
   console.log("Screening in progress...");
   for (const add of uniqueAddresses) {
-    if (screened.find((a:any)=> a.address === add) ) {
+    if (screenedAddresses.find((a:any)=> a.address === add) ) {
       console.log('Skipped: ', add)
     } else {
       const res = await screenAddress(add);
-      screened.push( res as any )
+      screenedAddresses.push( res )
       console.log('Screened: ', res)
     }
   }
-  const jsonResult = JSON.stringify(screened, null, 2);
+  const jsonResult = JSON.stringify(screenedAddresses, null, 2);
   fs.writeFile(
     "./src/addressScreening/screeningOutput.json",
     jsonResult,
@@ -87,11 +87,13 @@ export const runScreening = async (
       console.log("Data written to file");
     }
   );
-  return screened
+  return screenedAddresses
 };
 
+
 /* Uncomment to run screening */
-// runScreening(getAddressesFromFile(), false);
+runScreening(getAddressesFromFile());
+// runScreening(['0xDA030d6674812F4EfD4CAE4Bd6AC15073be57d48'])
 
 export const report = () => {
 
@@ -113,4 +115,4 @@ export const report = () => {
 
 };
 
-report();
+// report();

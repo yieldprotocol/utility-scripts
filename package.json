@@ -2,7 +2,8 @@
   "scripts": {
     "screenAddresses": "ts-node ./src/addressScreening/screenAddresses.ts",
     "getAllTokenHolders": "ts-node ./src/getAllTokenHolders/getAllTokenHolders.ts",
-    "generateMerkleTrees": "ts-node ./src/generateMerkelTrees/generateMerkleTrees.ts"
+    "generateMerkleTrees": "ts-node ./src/generateMerkelTrees/generateMerkleTrees.ts",
+    "getAllVaults": "ts-node ./src/getAllVaults/getAllVaults.ts"
   },
   "devDependencies": {
     "@types/csv-write-stream": "^2.0.0",
